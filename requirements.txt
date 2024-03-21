@@ -1,0 +1,5 @@
+boto3
+python-dotenv
+awscli
+psycopg2
+prettytable
