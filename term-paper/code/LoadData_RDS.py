@@ -3,6 +3,7 @@ import psycopg2
 from psycopg2 import OperationalError, errors
 from dotenv import load_dotenv
 import os
+import time
 
 load_dotenv()
 variable_names = [
@@ -17,6 +18,7 @@ rds_endpoint = env_vars["DATABASE_ENDPOINT"]
 rds_name = env_vars["DATABASE_NAME"]
 local_sample_data = 'term-paper/data/customer_info_sample.csv'
 
+start_time = time.time()
 try:
     conn_string = f"dbname='{rds_name}' user='{rds_user}' host='{rds_endpoint}' password='{rds_pass}'"
     conn = psycopg2.connect(conn_string)
@@ -71,3 +73,4 @@ except Exception as e:
 finally:
     cursor.close()
     conn.close()
+    print(f"Time taken to load data into RDS: {time.time() - start_time:.2f} seconds")

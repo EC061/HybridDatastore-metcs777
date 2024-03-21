@@ -22,11 +22,21 @@ To set up the Python environment for this project, please follow these steps:
 
 To ensure the proper functioning of the project, you need to set the following environmental variables in a `.env` file at the root directory of the repository:
 
-1. `ACCESS_KEY`: The access key ID for your AWS account.
+- The aws credentials should be directly set in awscli or in the `~/.aws/credentials` file. The `~/.aws/credentials` file should look like this:
 
-2. `SECRET_KEY`: The secret access key for your AWS account.
+    ```shell
+    [default]
+    aws_access_key_id = YOUR_ACCESS_KEY
+    aws_secret_access_key = YOUR_SECRET_KEY
+    aws_session_token = YOUR_SESSION_TOKEN
+    ```
+ - Past use of environmental variables in the code has been removed due to some strange role issues with AWS Academy account. The code still need the variables to be present in the `.env` file but will not actually use them
+ 
+1. ~~`ACCESS_KEY`~~: The access key ID for your AWS account.
 
-3. `SESSION_TOKEN`: The session token for your AWS account.
+2. ~~`SECRET_KEY`~~: The secret access key for your AWS account.
+
+3. ~~`SESSION_TOKEN`~~: The session token for your AWS account.
 
 4. `AWS_REGION`: The AWS region where you want to deploy the resources.
 

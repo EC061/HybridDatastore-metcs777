@@ -15,11 +15,12 @@ dynamodb_name = env_vars["NOSQL_NAME"]
 rds_identifier = env_vars["DATABASE_IDENTIFIER"]
 aws_region = env_vars["AWS_REGION"]
 
-session = boto3.Session(
-    aws_access_key_id=access_key,
-    aws_secret_access_key=secret_key,
-    aws_session_token=session_token
-)
+# session = boto3.Session(
+#     aws_access_key_id=access_key,
+#     aws_secret_access_key=secret_key,
+#     aws_session_token=session_token
+# )
+session = boto3.Session()
 
 # Delete the RDS PostgreSQL instance and DynamoDB table used for the project
 # Delete the DynamoDB table

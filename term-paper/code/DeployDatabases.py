@@ -3,6 +3,7 @@ from dotenv import load_dotenv, set_key
 import os
 import sys
 from botocore.exceptions import ClientError
+import time
 
 # Load environment variables from a .env file and assert that they are all set
 load_dotenv()
@@ -25,13 +26,15 @@ secret_key = env_vars["SECRET_KEY"]
 session_token = env_vars["SESSION_TOKEN"]
 dynamodb_name = env_vars["NOSQL_NAME"]
 aws_region = env_vars["AWS_REGION"]
-session = boto3.Session(
-    aws_access_key_id=access_key,
-    aws_secret_access_key=secret_key,
-    aws_session_token=session_token
-)
+# session = boto3.Session(
+#     aws_access_key_id=access_key,
+#     aws_secret_access_key=secret_key,
+#     aws_session_token=session_token
+# )
 
+session = boto3.Session()
 # No SQL Database: DynamoDB
+start_time = time.time()
 dynamodb = session.resource('dynamodb', region_name=aws_region)
 
 try:
@@ -63,9 +66,11 @@ try:
         print("Table created successfully!")
 except ClientError as e:
     print(e.response['Error']['Message'])
+print(f"Time taken to create DynamoDB: {time.time() - start_time:.2f} seconds")
 
 # Relational Database: AWS RDS
 # Create a new RDS instance with PostgreSQL engine and t3.micro instance class
+start_time = time.time()
 rds_client = session.client('rds', region_name=aws_region)
 try:
     response = rds_client.create_db_instance(
@@ -102,9 +107,11 @@ try:
 except Exception as e:
     print("Error waiting for RDS instance to become available:", e)
     sys.exit(1)
+print(f"Time taken to create RDS: {time.time() - start_time:.2f} seconds")
 
 # Add current ip to AWS security group inbound rules
 # This should not be used in production, it allows tcp traffic from any IP address to port 5432
+start_time = time.time()
 ec2_client = session.client('ec2', region_name=aws_region)
 security_groups = ec2_client.describe_security_groups()['SecurityGroups']
 default_sg_id = None
@@ -137,3 +144,4 @@ if default_sg_id:
 else:
     print("Default security group not found.")
     sys.exit(1)
+print(f"Time taken to create security group: {time.time() - start_time:.2f} seconds")

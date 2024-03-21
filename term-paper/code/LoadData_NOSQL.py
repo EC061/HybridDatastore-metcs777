@@ -3,6 +3,7 @@ from botocore.exceptions import ClientError
 from dotenv import load_dotenv
 import os
 import csv
+import time
 
 load_dotenv()
 variable_names = ["ACCESS_KEY", "SECRET_KEY", "SESSION_TOKEN", "NOSQL_NAME", "AWS_REGION"]
@@ -16,12 +17,15 @@ dynamodb_name = env_vars["NOSQL_NAME"]
 aws_region = env_vars["AWS_REGION"]
 local_sample_data = 'term-paper/data/customer_info_sample.csv'
 
-session = boto3.Session(
-    aws_access_key_id=access_key,
-    aws_secret_access_key=secret_key,
-    aws_session_token=session_token
-)
+# session = boto3.Session(
+#     aws_access_key_id=access_key,
+#     aws_secret_access_key=secret_key,
+#     aws_session_token=session_token
+# )
 
+session = boto3.Session()
+
+start_time = time.time()
 dynamodb = session.resource('dynamodb', region_name=aws_region)
 table = dynamodb.Table(dynamodb_name)
 
@@ -34,7 +38,7 @@ with open(local_sample_data, 'r') as file:
     for i, row in enumerate(reader):
         if i == 0:
             continue
-        if i > 1000:
+        if i > 10:
             break
         item = {
             'CustomerID': row[0],
@@ -67,3 +71,4 @@ for item in sample_data:
     except Exception as e:
         print(f"An unexpected error occurred for item {item['CustomerID']}: {e}")
 print(f'Data loading process completed. Total of {len(sample_data)} items loaded into the table.')
+print(f"Time taken to load data into DynamoDB: {time.time() - start_time} seconds")

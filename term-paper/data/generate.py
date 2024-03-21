@@ -48,4 +48,4 @@ def generate_sample_data(num_records, file_path):
             used_emails.add(email)
 
 sample_file_path = 'term-paper/data/customer_info_sample.csv'
-generate_sample_data(3000, sample_file_path)
+generate_sample_data(30, sample_file_path)

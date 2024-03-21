@@ -28,11 +28,13 @@ conn_string = f"dbname='{rds_name}' user='{rds_user}' host='{rds_endpoint}' pass
 address_fields = {'Street', 'City', 'State', 'PostalCode'}
 local_sample_data = 'term-paper/data/customer_info_sample.csv'
 
-session = boto3.Session(
-    aws_access_key_id=access_key,
-    aws_secret_access_key=secret_key,
-    aws_session_token=session_token
-)
+# session = boto3.Session(
+#     aws_access_key_id=access_key,
+#     aws_secret_access_key=secret_key,
+#     aws_session_token=session_token
+# )
+
+session = boto3.Session()
 dynamodb = session.resource('dynamodb', region_name=aws_region)
 table = dynamodb.Table(dynamodb_name)
 
@@ -131,7 +133,7 @@ def get_customer_ids_from_csv(file_path, start, end):
     return customer_ids
 
 
-nosql_id = get_customer_ids_from_csv(local_sample_data, 1, 1000)
+nosql_id = get_customer_ids_from_csv(local_sample_data, 1, 10)
 fields_to_fetch = ['FirstName', 'LastName', 'Email', 'Street']
 nosql_time_used = []
 nosql_total_time = 0
@@ -147,7 +149,7 @@ avg_nosql_time = sum(nosql_time_used) / len(nosql_time_used)
 print(f"Average time used for fetching data from DynamoDB: {avg_nosql_time} seconds")
 print(f"Total time used for fetching data from DynamoDB: {nosql_total_time} seconds")
 
-hybrid_id = get_customer_ids_from_csv(local_sample_data, 1001, 2000)
+hybrid_id = get_customer_ids_from_csv(local_sample_data, 11, 20)
 fields_to_fetch = ['FirstName', 'LastName', 'Email', 'Street']
 hybrid_time_used = []
 hybrid_total_time = 0
@@ -169,7 +171,7 @@ avg_hybrid_time = sum(hybrid_time_used) / len(hybrid_time_used)
 print(f"Average time used for fetching data from the hybrid datastore: {avg_hybrid_time} seconds")
 print(f"Total time used for fetching data from the hybrid datastore: {hybrid_total_time} seconds")
 
-rds_id = get_customer_ids_from_csv(local_sample_data, 2001, 3000)
+rds_id = get_customer_ids_from_csv(local_sample_data, 21, 30)
 rds_time_used = []
 rds_total_time = 0
 
@@ -220,7 +222,7 @@ with open('term-paper/data/time_data.json', 'w') as file:
  
 # Create a table to display the average time used for fetching data from each datastore
 table = PrettyTable()
-table.field_names = ["Datastore", "Average Time: Per Request (seconds)", "Total Time: 1000 Requests (seconds)"]
+table.field_names = ["Datastore", "Average Time: Per Request (seconds)", "Total Time: 10 Requests (seconds)"]
 table.add_row(["Hybrid Datastore (best case)", avg_nosql_time, nosql_total_time])
 table.add_row(["Hybrid Datastore (worst case)", avg_hybrid_time, hybrid_total_time])
 table.add_row(["Hybrid Datastore (sensitive field)  ", avg_sensitive_time, sensitive_total_time])
